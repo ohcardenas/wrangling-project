@@ -1,0 +1,230 @@
+
+
+
+##### Now we are going to do a sample of the insurance with 1000 claims 
+## p_loss <- 0.015 profit per premium paid of 1150 and insurance pais of -150000
+
+
+set.seed(25, sample.kind = "Rounding")
+
+
+p_loss <- 0.015
+n <- 1000
+pay <- -150000
+not_pay <- 1150
+
+
+p_loss
+X <- sample(c(pay,not_pay),n, prob = c(p_loss,(1-p_loss)), replace = TRUE)
+
+X
+sum(X)/10^6
+
+
+
+
+#### remember that when you add up all of the results of the sample of the urn 
+### you are just adding the payments made or received for this sample 
+
+library(dslabs)
+library(tidyverse)
+
+
+#### Now we are going to run a montecarlo simulation for the same 1000 insurances 
+### sample for 10000 montecarlo simulations 
+
+
+
+set.seed(27 , sample.kind = "Rounding")
+
+B <- 10000
+B
+
+n
+
+
+S <- replicate(B,{
+  
+ X <- sample(c(pay,not_pay), n, prob = c(p_loss,(1-p_loss)), replace = TRUE )
+ 
+ sum(X)
+              
+})
+
+S
+
+mean(S <= -1000000)
+  
+
+n <- 1000
+
+p <- 0.015
+
+l <- -150000
+
+####Remember that you have to find the z with qnorm 
+
+qnorm(0.05)
+
+z <- -1.644854
+
+
+
+
+
+x <- -l * (n*p-z*sqrt(n*p*(1-p)))/(n*(1-p)+z*sqrt(n*p*(1-p)))
+
+
+x
+
+##### What is the expected profit per policy at this rate
+
+
+E <- n*sum(p*pay,(1-p)*x)
+E
+
+
+###Run a Monte Carlo simulation with B=10000to determine the probability of
+###losing money on 1,000 policies given the new premium x, loss on a claim of $150,000, 
+###and probability of claim . Set the seed to 28 before running your simulation.
+
+
+
+set.seed(28, sample.kind = "Rounding")
+
+B <- 10000
+  
+S <- replicate(B, {
+    
+    X <- sample(c(pay,x), n, prob = c(p,(1-p)), replace = TRUE)
+    sum(X)
+    
+})
+
+
+mean( S < 0)  
+#### The company cannot predict whether the pandemic death rate will stay stable
+###. Set the seed to 29, then write a Monte Carlo simulation that for each of 
+##iterations:  
+#####randomly changes  by adding a value between -0.01 and 0.01 with 
+###sample(seq(-0.01, 0.01, length = 100), 1)
+
+
+
+#### We are going to analize how the probabilty of dead 
+
+### seq(-0.01, 0.01, length = 100), 1)
+
+set.seed(29, sample.kind = "Rounding")
+
+pay <- -150000
+
+p <- 0.015
+
+v <- sample(seq(-0.01, 0.01, length = 100),1)
+
+v
+
+new_p <- p+v
+
+
+new_p
+
+n <- 1000
+
+B <- 10000
+
+S <- replicate(B, {
+    
+X <- sample(c(pay,x), n, prob = c(new_p,(1-new_p)), replace = TRUE)
+     sum(X)
+    
+})
+ 
+S
+
+mean(S < 0) 
+
+x
+  
+
+B <- 10000
+
+prob_loss_less_5 <- replicate(B,{
+  
+  
+  X <- sample(c(pay, x), n, prob = c(p,(1-p)), replace = TRUE)
+  sum(X)
+  
+})
+
+
+mean(prob_loss_less_5 < 0.05)
+
+
+
+
+r <- seq(1501,2500, 1)
+
+r <- 2254.556
+
+r
+
+length(premiums)
+p <- 0.015
+p_not_pay <- 1-p
+p_not_pay
+
+p_less_than_five <- function(r){
+  
+  B <- 10000
+  
+  S <- replicate(B, {
+    
+    X <- sample(c(pay,r), n, prob = c(p,(1-p)), replace = TRUE)
+    sum(X)
+    
+  })
+  
+  mean(S < 0.05)
+  
+}
+
+
+
+p_less_than_five(r)
+
+
+#### Now we do it with a vector 
+
+
+r <- seq(1501,2500, 1)
+
+p_less_than_five_sapply <- sapply(r,p_less_than_five)
+
+
+
+
+
+
+
+
+p_less_than_five_sapply
+
+
+p_less_than_five_DF <-data.frame(r, p_less_than_five_sapply)
+
+
+
+
+p_less_than_five_DF %>% filter(p_less_than_five_sapply < 0.05)
+
+
+
+
+
+
+
+
+
+

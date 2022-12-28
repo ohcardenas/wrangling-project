@@ -1,0 +1,226 @@
+library(rvest)
+
+
+url <- "https://en.wikipedia.org/wiki/Murder_in_the_United_States_by_state"
+
+
+h <- read_html(url)
+
+
+class(h)
+
+h
+
+
+tab <- h %>% html_nodes("table")
+
+
+tab <- tab[[2]]
+
+tab <- tab %>% html_table
+
+
+
+tab
+
+class(tab)
+
+
+
+h <- read_html("http://www.foodnetwork.com/recipes/alton-brown/guacamole-recipe-1940609")
+
+
+
+recipe <- h%>% html_node(".o-AssetTitle__a-HeadlineText")%>% html_text()
+prep_time <- h %>% html_node(".m-RecipeInfo__a-Description--Total")%>% html_text()
+ingredients <- h %>% html_nodes(".o-Ingredients__a-Ingredient")%>% html_text()
+
+recipe
+
+prep_time
+
+ingredients
+
+guacamole <- list(recipe, prep_time, ingredients)
+
+
+guacamole
+
+
+.o-Ingredients__a-Ingredient+ .o-Ingredients__a-Ingredient .o-Ingredients__a-Ingredient--CheckboxLabel
+
+
+.o-Ingredients__a-Ingredient+ .o-Ingredients__a-Ingredient .o-Ingredients__a-Ingredient--CheckboxLabel
+
+
+
+extract_recipe <- function(url){
+  
+  h <- read_html(url)
+  recipe <- h %>% html_node(".o-AssetTitle__a-HeadlineText")%>% html_text()
+  prep_time <- h %>% html_node(".m-RecipeInfo__a-Description--Total")%>% html_text()
+  ingredients <- h%>% html_nodes(".o-Ingredients__a-Ingredient")%>% html_text()
+  return(list(recipe, prep_time, ingredients))
+}
+  
+  
+extract_recipe("http://www.foodnetwork.com/recipes/food-network-kitchen/pancakes-recipe-1913844")
+
+
+#### Assesment html web scraping 
+### we are going to get some information from a website containin different 
+### tables having info about rpoffesional baseball players 
+
+
+url <- "https://web.archive.org/web/20181024132313/http://www.stevetheump.com/Payrolls.htm"
+h <- read_html(url)
+
+### when you have a web page with a lot of tables how do you extract 
+### those effectively 
+
+
+nodes <- html_nodes(h, "table")
+
+### If we would like that table in text 
+
+
+html_text(nodes[[8]])
+
+###if we woul like the table 
+
+
+html_table(nodes[[8]])
+
+### We are just going to analise the first 4 tables in the web page 
+
+
+html_table(nodes[[1]])
+
+
+html_table(nodes[[2]])
+
+
+html_table(nodes[[3]])
+
+
+html_table(nodes[[4]])
+
+
+### quesion 3 html assesment 
+###Create a table called tab_1 using entry 10 of nodes. Create a table 
+##called tab_2 using entry 19 of nodes.
+#Note that the column names should be c("Team", "Payroll", "Average"). 
+##You can see that these column names are actually in the first data row
+##of each table, and that tab_1 has an extra first column No. that
+##should be removed so that the column names for both tables match.
+
+##Remove the extra column in tab_1, remove the first row of each dataset, 
+#and change the column names for each table to c("Team", "Payroll", "Average"). 
+##Use a full_join() by the Team to combine these two tables.
+
+
+tab_1 <- html_table(nodes[[10]])
+
+
+tab_2 <- html_table(nodes[[19]])
+
+
+
+tab_1 <- tab_1 %>% select(-X1) 
+
+
+tab_1 <- tab_1[-1,]
+
+
+tab_1 <- tab_1 %>% rename(team = X2, payroll = X3, average = X4)
+
+
+tab_1
+
+tab_2 <- tab_2[-1,]
+
+tab_2 <- tab_2 %>% rename(team = X1 , payroll = X2 , average = X3)
+
+tab_1
+
+
+tab_2
+
+
+tab_full <- full_join(tab_1, tab_2, by = "team")
+
+
+tab_full 
+
+
+nrow(tab_full)
+
+
+### Question 4 
+
+
+
+h <- read_html("https://en.wikipedia.org/w/index.php?title=Opinion_polling_for_the_United_Kingdom_European_Union_membership_referendum&oldid=896735054")
+
+
+nodes <- html_nodes(h,"table")
+
+class(nodes)
+
+
+
+### remember that the fill argument is gong to fill the missing data with NA's
+
+tab_1 <- html_table(nodes[[1]], fill = TRUE)
+
+tab_1
+
+help("html_table")
+
+
+
+tab_2 <- html_table(nodes[[2]], fill = TRUE)
+
+
+tab_2
+
+
+
+tab_3 <- html_table(nodes[[3]], fill = TRUE)
+
+
+tab_3
+
+
+tab_4 <- html_table(nodes[[4]], fill = TRUE)
+
+tab_4  
+
+
+tab_5 <- html_table(nodes[[5]], fill = TRUE)  
+tab_5
+
+tab_6 <- html_table(nodes[[6]], fill = TRUE)  
+  
+tab_6
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
